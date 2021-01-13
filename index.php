@@ -254,8 +254,8 @@ $.getJSON = function (url, f) {
 function getIploc() {
 	$.getData('https://myip.ipip.net/', function (data) {
 		remoteip = document.getElementById('remoteip').innerText
-		ip = data.match(/\d+\.\d+\.\d+\.\d+/)[0] //IP
-		iploc = data.substring(ip.length+12) //中国 河南 平顶山 电信
+		ip = data.match(/\d+\.\d+\.\d+\.\d+/)[0]
+		iploc = data.substring(ip.length+12)
 		if (ip !== remoteip) {
 			$("#iploc").html('（检测到分流代理，真实 IP '+ ip + ' | '+ iploc+'）')
 		} else {
