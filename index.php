@@ -2,9 +2,9 @@
 
 function __($message) {
 	$messages = array(
-		'User Agent' => '访客 UA',
-		'GeoIP' => '访客 IP',
-		'Time' => '当前时间',
+		'User Agent' => 'UA',
+		'GeoIP' => 'IP',
+		'Time' => 'Time',
 		
 	);
 	if (substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) === 'zh') {
@@ -143,6 +143,10 @@ h2 {
 	<tr>
 	<th colspan="4"><?php __('访客信息'); ?></th>
 	</tr>
+		<tr>
+	<td><?php __('Time'); ?></td>
+	<td><span id="stime"><?php echo $stime;?></span></td>
+	</tr>
 	<tr>
 	<td><?php __('GeoIP'); ?></td>
 	<td colspan="3">
@@ -154,10 +158,6 @@ h2 {
 	<td><?php __('User Agent'); ?></td>
 	<td colspan="3"><?php echo $ua; ?>
 	</td>
-	</tr>
-	<tr>
-	<td><?php __('Time'); ?></td>
-	<td><span id="stime"><?php echo $stime;?></span></td>
 	</tr>
 	
 </table>
@@ -254,12 +254,12 @@ $.getJSON = function (url, f) {
 function getIploc() {
 	$.getData('https://myip.ipip.net/', function (data) {
 		remoteip = document.getElementById('remoteip').innerText
-		ip = data.match(/\d+\.\d+\.\d+\.\d+/)[0]
-		iploc = data.substring(ip.length+6)
+		ip = data.match(/\d+\.\d+\.\d+\.\d+/)[0] //IP
+		iploc = data.substring(ip.length+12) //中国 河南 平顶山 电信
 		if (ip !== remoteip) {
-			$("#iploc").html('| 检测到分流代理，'+ data)
+			$("#iploc").html('（检测到分流代理，真实 IP '+ ip + ' | '+ iploc+'）')
 		} else {
-			$("#iploc").html('|'+iploc)
+			$("#iploc").html('| '+iploc)
 		}
 	})
 }
