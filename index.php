@@ -2,9 +2,9 @@
 
 function __($message) {
 	$messages = array(
-		'User Agent' => 'UA',
-		'GeoIP' => 'IP',
-		'Time' => 'Time',
+		'User Agent' => '访客 UA',
+		'GeoIP' => 'IP 地址',
+		'Time' => '当前时间',
 		
 	);
 	if (substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) === 'zh') {
@@ -12,6 +12,14 @@ function __($message) {
 	} else {
 		print $message;
 	}
+}
+
+function get_protocol(){
+    return $_SERVER["SERVER_PROTOCOL"];
+}
+
+function get_method(){
+    return $_SERVER["REQUEST_METHOD"];
 }
 
 function get_remote_addr()
@@ -92,6 +100,8 @@ if (isset($_GET['method'])) {
 }
 
 $stime = date('Y年m月d日 H:i:s');
+$protocol = get_protocol();
+$method = get_method();
 $remote_addr = get_remote_addr();
 $ua = get_user_agent();
 
@@ -102,6 +112,8 @@ $ua = get_user_agent();
 <title>请求信息</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="keywords" content="获取 UA,User Agent,获取 IP">
+  <meta name="description" content="查看自己的 IP 和 UA。">
 <style>
 html {
 	scroll-behavior: smooth;
@@ -141,22 +153,32 @@ h2 {
 
 <table>
 	<tr>
-	<th colspan="4"><?php __('访客信息'); ?></th>
-	</tr>
-		<tr>
-	<td><?php __('Time'); ?></td>
-	<td><span id="stime"><?php echo $stime;?></span></td>
+	<th colspan="6"><?php __('请求信息'); ?></th>
 	</tr>
 	<tr>
-	<td><?php __('GeoIP'); ?></td>
-	<td colspan="3">
+	<td nowrap><?php __('Time'); ?></td>
+	<td colspan="4"><span id="stime"><?php echo $stime;?></span></td>
+	</tr>
+	<tr>
+	<td nowrap><?php __('请求方法'); ?></td>
+	<td colspan="4"><?php echo $method; ?>
+	</td>
+	</tr>
+    <tr>
+	<td nowrap><?php __('请求协议'); ?></td>
+	<td colspan="4"><?php echo $protocol; ?>
+	</td>
+	</tr>
+	<tr>
+	<td nowrap><?php __('GeoIP'); ?></td>
+	<td colspan="4">
 		<span id="remoteip"><?php echo $remote_addr;?></span>
 		<span id="iploc"></span>
 	</td>
 	</tr>
 	<tr>
-	<td><?php __('User Agent'); ?></td>
-	<td colspan="3"><?php echo $ua; ?>
+	<td nowrap><?php __('User Agent'); ?></td>
+	<td colspan="4"><?php echo $ua;?>
 	</td>
 	</tr>
 	
