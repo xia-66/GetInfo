@@ -113,7 +113,17 @@ $ua = get_user_agent();
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="keywords" content="获取 UA,User Agent,获取 IP">
-  <meta name="description" content="查看自己的 IP 和 UA。">
+<meta name="description" content="查看自己的 IP 和 UA。">
+<link rel="dns-prefetch" href="//ip.ddnsto.com">
+<link rel="dns-prefetch" href="//you-ip.appspot.com">
+<link rel="dns-prefetch" href="//hm.baidu.com">
+<link rel="preconnect" href="//ip.ddnsto.com">
+<link rel="preconnect" href="//you-ip.appspot.com">
+<link rel="preconnect" href="//hm.baidu.com">
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon"   href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/style.css"> 
 <style>
 html {
 	scroll-behavior: smooth;
@@ -147,7 +157,8 @@ h2 {
 	}
 }
 </style>
-
+<div class="header d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm">
+      <h5 class="container my-0 mr-md-auto font-weight-normal">你的IP</h5></div>
 <h2 >请求信息</h2>
 <div class="container">
 
@@ -177,6 +188,25 @@ h2 {
 	</td>
 	</tr>
 	<tr>
+	<td nowrap>内网 IP</td>
+	<td colspan="4">
+		<span id="Neiwang_IP"></span>
+	</td>
+	</tr>
+
+	<tr>
+	<td nowrap>代理 IP</td>
+	<td colspan="4">
+		<span id="ipp"></span>
+	</td>
+	</tr>	
+	<tr>
+	<td nowrap>出国 IP</td>
+	<td colspan="4">
+    <span id="ipw"></span>
+	</td>
+	</tr>	
+	<tr>
 	<td nowrap><?php __('User Agent'); ?></td>
 	<td colspan="4"><?php echo $ua;?>
 	</td>
@@ -185,6 +215,68 @@ h2 {
 </table>
 
 </div>
+
+    <div class="footer">
+    <div class="container">
+        <b>© 2021 <a href="http://www.nange.cn" style="color: #4caf50;" target="_blank">楠格</a>
+    </div>
+</div>
+    <script>
+      var userAgent = navigator.userAgent;
+      if (userAgent.indexOf("Edge") > -1) {
+        document.getElementById("NW_IP").style.display="none";
+      }
+      // NOTE: window.RTCPeerConnection is "not a constructor" in FF22/23
+      var RTCPeerConnection = /*window.RTCPeerConnection ||*/ window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+
+      if (RTCPeerConnection) (function () {
+        var rtc = new RTCPeerConnection({iceServers:[]});
+        if (1 || window.mozRTCPeerConnection) {      // FF [and now Chrome!] needs a channel/stream to proceed
+          rtc.createDataChannel('', {reliable:false});
+        };
+
+        rtc.onicecandidate = function (evt) {
+          // convert the candidate to SDP so we can run it through our general parser
+          // see https://twitter.com/lancestout/status/525796175425720320 for details
+          if (evt.candidate) grepSDP("a="+evt.candidate.candidate);
+        };
+        rtc.createOffer(function (offerDesc) {
+          grepSDP(offerDesc.sdp);
+          rtc.setLocalDescription(offerDesc);
+        }, function (e) { console.warn("offer failed", e); });
+
+        var addrs = Object.create(null);
+        addrs["0.0.0.0"] = false;
+        function updateDisplay(newAddr) {
+          if (newAddr in addrs) return;
+          else addrs[newAddr] = true;
+          var displayAddrs = Object.keys(addrs).filter(function (k) { return addrs[k]; });
+          document.getElementById('Neiwang_IP').textContent = displayAddrs.join(" or perhaps ") || "n/a";
+        }
+
+        function grepSDP(sdp) {
+          var hosts = [];
+          sdp.split('\r\n').forEach(function (line) { // c.f. http://tools.ietf.org/html/rfc4566#page-39
+            if (~line.indexOf("a=candidate")) {     // http://tools.ietf.org/html/rfc4566#section-5.13
+              var parts = line.split(' '),        // http://tools.ietf.org/html/rfc5245#section-15.1
+                addr = parts[4],
+                type = parts[7];
+              if (type === 'host') updateDisplay(addr);
+            } else if (~line.indexOf("c=")) {       // http://tools.ietf.org/html/rfc4566#section-5.7
+              var parts = line.split(' '),
+                addr = parts[2];
+              updateDisplay(addr);
+            }
+          });
+        }
+      })(); else {
+        document.getElementById("NW_IP").style.display="none";
+        //document.getElementById('Neiwang_IP').innerHTML = "<code>ifconfig | grep inet | grep -v inet6 | cut -d\" \" -f2 | tail -n1</code>";
+        //document.getElementById('Neiwang_IP').nextSibling.textContent = "In Chrome and Firefox your IP should display automatically, by the power of WebRTCskull.";
+      }
+  
+    </script>
+
 
 <style>
 table {
@@ -286,6 +378,19 @@ function getIploc() {
 	})
 }
 
+function getIPp() {
+	$.getJSON('https://extreme-ip-lookup.com/json', function (data) {
+			$("#ipp").html(data.query+' | '+data.country+' | '+data.org+' | '+data.ipName)
+	})
+}
+
+function getIPw() {
+	$.getJSON('https://ipinfo.io/json', function (data) {
+			$("#ipw").html(data.ip+' | '+data.country+' | '+data.org)
+	})
+}
+
+
 function getSysinfo() {
 	$.getJSON('?method=sysinfo', function (data) {
 		$('#stime').html(data.stime)
@@ -294,7 +399,9 @@ function getSysinfo() {
 
 window.onload = function() {
 	setTimeout(getIploc, 0)
-	setInterval(getSysinfo, 1000)
+	setTimeout(getIPw, 0)
+	setTimeout(getIPp, 0)
+	/*setInterval(getSysinfo, 1000)*/
 }
 
 </script>
