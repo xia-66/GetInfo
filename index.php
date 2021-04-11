@@ -3,7 +3,7 @@
 function __($message) {
 	$messages = array(
 		'User Agent' => '访客 UA',
-		'GeoIP' => 'IP 地址',
+		'GeoIP' => '直连 IP',
 		'Time' => '当前时间',
 		
 	);
@@ -114,12 +114,6 @@ $ua = get_user_agent();
 <meta name="robots" content="noindex, nofollow">
 <meta name="keywords" content="获取 UA,User Agent,获取 IP">
 <meta name="description" content="查看自己的 IP 和 UA。">
-<link rel="dns-prefetch" href="//ip.ddnsto.com">
-<link rel="dns-prefetch" href="//you-ip.appspot.com">
-<link rel="dns-prefetch" href="//hm.baidu.com">
-<link rel="preconnect" href="//ip.ddnsto.com">
-<link rel="preconnect" href="//you-ip.appspot.com">
-<link rel="preconnect" href="//hm.baidu.com">
 <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon"   href="/favicon.ico" type="image/x-icon" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
@@ -158,7 +152,7 @@ h2 {
 }
 </style>
 <div class="header d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm">
-      <h5 class="container my-0 mr-md-auto font-weight-normal">你的IP</h5></div>
+      <h5 class="container my-0 mr-md-auto font-weight-normal">请求信息</h5></div>
 <h2 >请求信息</h2>
 <div class="container">
 
@@ -190,7 +184,7 @@ h2 {
 	<tr>
 	<td nowrap>内网 IP</td>
 	<td colspan="4">
-		<span id="Neiwang_IP"></span>
+		<span id="NatIP"></span>
 	</td>
 	</tr>
 
@@ -251,7 +245,7 @@ h2 {
           if (newAddr in addrs) return;
           else addrs[newAddr] = true;
           var displayAddrs = Object.keys(addrs).filter(function (k) { return addrs[k]; });
-          document.getElementById('Neiwang_IP').textContent = displayAddrs.join(" or perhaps ") || "n/a";
+          document.getElementById('NatIP').textContent = displayAddrs.join(" or perhaps ") || "n/a";
         }
 
         function grepSDP(sdp) {
@@ -271,8 +265,8 @@ h2 {
         }
       })(); else {
         document.getElementById("NW_IP").style.display="none";
-        //document.getElementById('Neiwang_IP').innerHTML = "<code>ifconfig | grep inet | grep -v inet6 | cut -d\" \" -f2 | tail -n1</code>";
-        //document.getElementById('Neiwang_IP').nextSibling.textContent = "In Chrome and Firefox your IP should display automatically, by the power of WebRTCskull.";
+        //document.getElementById('Nat_IP').innerHTML = "<code>ifconfig | grep inet | grep -v inet6 | cut -d\" \" -f2 | tail -n1</code>";
+        //document.getElementById('Nat_IP').nextSibling.textContent = "In Chrome and Firefox your IP should display automatically, by the power of WebRTCskull.";
       }
   
     </script>
@@ -365,6 +359,21 @@ $.getJSON = function (url, f) {
 	xhr.send()
 }
 
+$.postJSON = function (url, f) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', url, true)
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			if (window.JSON) {
+				f(JSON.parse(xhr.responseText))
+			} else {
+				f((new Function('return ' + xhr.responseText))())
+			}
+		}
+	}
+	xhr.send()
+}
+
 function getIploc() {
 	$.getData('https://myip.ipip.net/', function (data) {
 		remoteip = document.getElementById('remoteip').innerText
@@ -380,7 +389,7 @@ function getIploc() {
 
 function getIPp() {
 	$.getJSON('https://extreme-ip-lookup.com/json', function (data) {
-			$("#ipp").html(data.query+' | '+data.country+' | '+data.org+' | '+data.ipName)
+			$("#ipp").html(data.query+' | '+data.country+' | '+data.org)
 	})
 }
 
@@ -389,7 +398,6 @@ function getIPw() {
 			$("#ipw").html(data.ip+' | '+data.country+' | '+data.org)
 	})
 }
-
 
 function getSysinfo() {
 	$.getJSON('?method=sysinfo', function (data) {
