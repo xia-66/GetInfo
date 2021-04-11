@@ -386,10 +386,9 @@ function getIploc() {
 		}
 	})
 }
-
 function getIPp() {
 	$.getJSON('https://extreme-ip-lookup.com/json', function (data) {
-			$("#ipp").html(data.query+' | '+data.country+' | '+data.org)
+			$("#ipp").html(data.query+' | '+data.countryCode+' | '+data.city+' | '+data.org)
 	})
 }
 
