@@ -415,8 +415,6 @@ function getIPp() {
 	})
 }
 
-
-
 function getIPw() {
     var token='1632d503de4a10';
 	$.getJSON('https://ipinfo.io/json?token='+token, function (data) {
