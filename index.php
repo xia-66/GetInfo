@@ -178,7 +178,7 @@ h2 {
 	<td nowrap><?php __('GeoIP'); ?></td>
 	<td colspan="4">
 		<span id="remoteip"><?php echo $remote_addr;?></span>
-		<span id="iploc"></span>
+		<span id="IPloc"></span>
 	</td>
 	</tr>
 	<tr>
@@ -373,32 +373,64 @@ $.postJSON = function (url, f) {
 	}
 	xhr.send()
 }
-
-function getIploc() {
+/*text 数据类型*/
+function getIPloc() {
 	$.getData('https://myip.ipip.net/', function (data) {
 		remoteip = document.getElementById('remoteip').innerText
 		ip = data.match(/\d+\.\d+\.\d+\.\d+/)[0]
 		iploc = data.substring(ip.length+12)
 		if (ip !== remoteip) {
-			$("#iploc").html('（检测到分流代理，真实 IP '+ ip + ' | '+ iploc+'）')
+			$("#IPloc").html('（检测到分流代理，真实 IP '+ ip + ' | '+ iploc+'）')
 		} else {
-			$("#iploc").html('| '+iploc)
+			$("#IPloc").html('| '+iploc)
 		}
 	})
 }
+
+/*json 数据类型*/
+/*
+function getIPloc() {
+	$.getJSON('https://myip.ipip.net/json', function (data) {
+		remoteip = document.getElementById('remoteip').innerText
+		ip = data.data.ip
+		iploc = data.data.location
+		if (ip !== remoteip) {
+			$("#IPloc").html('（检测到分流代理，真实 IP '+ ip + ' | '+ iploc+'）')
+		} else {
+			$("#IPloc").html('| '+iploc)
+		}
+	})
+}
+*/
+/*
 function getIPp() {
 	$.getJSON('https://extreme-ip-lookup.com/json', function (data) {
 			$("#ipp").html(data.query+' | '+data.countryCode+' | '+data.city+' | '+data.org)
 	})
 }
+*/
+function getIPp() {
+	$.getJSON('https://ipapi.co/json', function (data) {
+			$("#ipp").html(data.ip+' | '+data.country_code+' | '+data.region+' | '+data.city+' | '+data.asn+' '+data.org)
+	})
+}
+
+
 
 function getIPw() {
     var token='1632d503de4a10';
 	$.getJSON('https://ipinfo.io/json?token='+token, function (data) {
-			$("#ipw").html(data.ip+' | '+data.country+' | '+data.city+' | '+data.org)
+			$("#ipw").html(data.ip+' | '+data.country+' | '+data.region+' | '+data.city+' | '+data.org)
 	})
 }
-
+/*
+function getIPw() {
+    var token='1632d503de4a10';
+	$.getJSON('https://ipwhois.app/json', function (data) {
+			$("#ipw").html(data.ip+' | '+data.country_flag+' | '+data.country_code+' | '+data.city+' | '+data.org)
+	})
+}
+*/
 function getSysinfo() {
 	$.getJSON('?method=sysinfo', function (data) {
 		$('#stime').html(data.stime)
@@ -406,7 +438,7 @@ function getSysinfo() {
 }
 
 window.onload = function() {
-	setTimeout(getIploc, 0)
+	setTimeout(getIPloc, 0)
 	setTimeout(getIPw, 0)
 	setTimeout(getIPp, 0)
 	/*setInterval(getSysinfo, 1000)*/
