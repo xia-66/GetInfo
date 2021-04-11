@@ -395,7 +395,7 @@ function getIPp() {
 function getIPw() {
     var token='1632d503de4a10';
 	$.getJSON('https://ipinfo.io/json?token='+token, function (data) {
-			$("#ipw").html(data.ip+' | '+data.country+' | '+data.org)
+			$("#ipw").html(data.ip+' | '+data.country+' | '+data.city+' | '+data.org)
 	})
 }
 
