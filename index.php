@@ -82,23 +82,6 @@ if (!function_exists('json_encode')) {
 	}
 }
 
-if (isset($_GET['method'])) {
-	header("Cache-Control: no-cache, must-revalidate");
-	switch ($_GET['method']) {
-		case 'raw':
-			header('Context-Type: application/octet-stream');
-			header('Content-Disposition: attachment; filename="index.php"');
-			readfile($_SERVER["SCRIPT_FILENAME"]);
-			exit;
-		case 'sysinfo':
-			echo json_encode(array(
-				
-				'stime' => date('Y年m月d日 H:i:s'),
-			));
-			exit;
-	}
-}
-
 $stime = date('Y年m月d日 H:i:s');
 $protocol = get_protocol();
 $method = get_method();
