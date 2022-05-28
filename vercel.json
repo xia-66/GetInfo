@@ -9,7 +9,7 @@
     "routes": [
         {
             "src": "/(\\w*)\\.(?:css)",
-            "dest": "/api/style.css"
+            "dest": "/css/style.css"
         },
         { 
             "src": "/(.*)",
