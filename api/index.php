@@ -98,8 +98,8 @@ $ua = get_user_agent();
 <meta name="keywords" content="获取 UA,User Agent,获取 IP">
 <meta name="description" content="查看自己的 IP 和 UA。">
 <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-<link rel="shortcut icon"   href="/favicon.ico" type="image/x-icon" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+<link rel="shortcut icon"   href="favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/style.css"> 
 <style>
 html {
