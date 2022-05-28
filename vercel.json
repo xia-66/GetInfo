@@ -8,7 +8,7 @@
     },
     "routes": [
         {
-            "src": "/(\\w*)\\.(?:css|jpeg|png|gif|bmp|webp)",
+            "src": "/(\\w*)\\.(?:css)",
             "dest": "/api/style.css"
         },
         { 
